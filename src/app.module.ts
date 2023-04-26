@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { GlobalModule } from './modules/global/global.module';
 import { TaskModule } from './modules/task/task.module';
-import { ColumnModule } from './modules/column/column.module';
-import { BoardModule } from './modules/board/board.module';
-import { UserModule } from './modules/user/user.module';
+import { Task, TaskSchema } from './schemas/TaskSchema';
+
 
 @Module({
   imports: [
@@ -12,11 +12,10 @@ import { UserModule } from './modules/user/user.module';
       envFilePath: '.env',
       isGlobal: true
     }),
+    MongooseModule.forFeature([{ name: Task.name, schema: TaskSchema }]),
     MongooseModule.forRoot(process.env.MONGODB_URI),
-    TaskModule,
-    ColumnModule,
-    BoardModule,
-    UserModule
+    GlobalModule,
+    TaskModule
   ],
   controllers: [],
   providers: [],

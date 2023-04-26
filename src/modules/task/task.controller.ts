@@ -1,63 +1,46 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { Task } from 'src/schemas/TaskSchema';
+import { ResponseDTO } from 'src/shared/dtos/ResponseDTO.dto';
+import { createRes } from 'src/shared/utils/createResponse';
 
 @Controller('task')
 export class TaskController {
-    constructor(private readonly ts: TaskService){}
+    constructor(private taskService: TaskService){}
 
     @Post()
-    @HttpCode(201)
-    createTask(@Body() task: Task):Promise<Task>{
+    async createTask(@Body() task:Task):Promise<ResponseDTO>{
         try{
-            return this.ts.createTask(task)
-        } catch(err){
-            throw new HttpException(
-                "Bad POST request at task creation (Controller)", 
-                HttpStatus.BAD_REQUEST 
-            )
+            return createRes(true, "Task has been created successfully", await this.taskService.createTask(task))
+        } catch (err){
+            return  createRes(false, err.message, null)
         }
     }
-
+    
     @Get(":id")
-    @HttpCode(200)
-    getTask(@Param("id") id):Promise<Task>{
+    async getTaskById(@Param("id") id:string):Promise<ResponseDTO>{
         try{
-            return this.ts.findTask(id)
+            return createRes(true, "Task has been fetched by id", await this.taskService.getTaskById(id))
         } catch(err){
-            throw new HttpException(
-                "Bad GET request at task fetching (Controller)", 
-                HttpStatus.BAD_REQUEST 
-            )
+            return  createRes(false, err.message, null)
         }
-        
     }
 
     @Put(":id")
-    @HttpCode(200)
-    updateTask(@Param("id") id, @Body() task: Task):Promise<Task>{
+    async updateTaskById(@Param("id") id:string, @Body() newTaskData:Task):Promise<ResponseDTO>{
         try{
-            return this.ts.updateTask(id, task)
+            return createRes(true, "Task has been updated by id", await this.taskService.updateTaskById(id, newTaskData))
         } catch(err){
-            throw new HttpException(
-                "Bad PUT request at task updating (Controller)", 
-                HttpStatus.BAD_REQUEST 
-            )
+            return  createRes(false, err.message, null)
         }
-        
     }
 
     @Delete(":id")
-    @HttpCode(200)
-    removeTask(@Param("id") id):Promise<Task>{
+    async deleteTaskById(@Param("id") id:string):Promise<ResponseDTO>{
         try{
-            return this.ts.deleteTask(id)
+            return createRes(true, "Task has been deleted by id", await this.taskService.deleteTaskById(id))
         } catch(err){
-            throw new HttpException(
-                "Bad DELETE request at task deleting (Controller)", 
-                HttpStatus.BAD_REQUEST 
-            )
+            return  createRes(false, err.message, null)
         }
-        
     }
 }
