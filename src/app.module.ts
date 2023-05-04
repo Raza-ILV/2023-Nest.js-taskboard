@@ -4,6 +4,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { GlobalModule } from './modules/global/global.module';
 import { TaskModule } from './modules/task/task.module';
 import { Task, TaskSchema } from './schemas/TaskSchema';
+import { ColumnModule } from './modules/column/column.module';
+import { BoardModule } from './modules/board/board.module';
 
 
 @Module({
@@ -15,7 +17,9 @@ import { Task, TaskSchema } from './schemas/TaskSchema';
     MongooseModule.forFeature([{ name: Task.name, schema: TaskSchema }]),
     MongooseModule.forRoot(process.env.MONGODB_URI),
     GlobalModule,
-    TaskModule
+    TaskModule,
+    ColumnModule,
+    BoardModule
   ],
   controllers: [],
   providers: [],
