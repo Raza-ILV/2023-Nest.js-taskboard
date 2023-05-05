@@ -20,7 +20,7 @@ export class BoardController {
 
     @Post("send-invite")
     async sendInviteToBoardByEmail(@Body("email") email:string):Promise<ResponseDTO>{
-        return createRes(false, "Upcoming feature", null)
+        return createRes(true, "Upcoming feature", null)
     }
     
     @Get(":id")
@@ -50,7 +50,7 @@ export class BoardController {
             return createRes(false, err.message, null)
         }
     }
-
+    
     @Patch("add-column/:id")
     async addColumnToBoardById(@Param("id") id:string, @Body() column:Column):Promise<ResponseDTO>{
         try{
@@ -79,5 +79,13 @@ export class BoardController {
         } 
     }
 
+    @Patch("add-collaborator/:id")
+    async addCollaboratorToBoardById(@Param("id") id:string,@Body("userId") userId:string){
+        return this.boardService.addCollaboratorToBoardById(id, userId)
+    }
 
+    @Patch("remove-collaborator/:id")
+    async removeCollaboratorFromBoardById(@Param("id") id:string,@Body("userId") userId:string){
+        return this.boardService.removeCollaboratorFromBoardById(id, userId)
+    }
 }

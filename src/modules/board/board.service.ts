@@ -47,4 +47,27 @@ export class BoardService {
         return updatedBoard
     }
 
+    async addCollaboratorToBoardById(id:string, userId:string):Promise<Board>{
+        const oldBoard:Board = await this.getBoardById(id)
+        if(!oldBoard.boardCollaboratorsId.includes(userId)){
+            oldBoard.boardCollaboratorsId.push(userId)
+            oldBoard.boardCollaboratorsCount += 1
+            await this.boardModel.findByIdAndUpdate(id, oldBoard)
+            return oldBoard
+        } else{
+            return oldBoard
+        }
+    }
+
+    async removeCollaboratorFromBoardById(id:string, userId:string):Promise<Board>{
+        const oldBoard:Board = await this.getBoardById(id)
+        if(oldBoard.boardCollaboratorsId.includes(userId)){
+            oldBoard.boardCollaboratorsId = oldBoard.boardCollaboratorsId.filter(collaborator => collaborator != userId)
+            oldBoard.boardCollaboratorsCount -= 1
+            await this.boardModel.findByIdAndUpdate(id, oldBoard)
+            return oldBoard
+        } else{
+            return oldBoard
+        }
+    }
 }
